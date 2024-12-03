@@ -1,24 +1,32 @@
 import streamlit as st
-from pymongo import MongoClient
 
-client = MongoClient("mongodb://localhost:27017/")
 DB_NAME = "phishing_campaign"
 SOURCE_COLLECTION = "validated_templates"
 TARGET_COLLECTION = "validated_templates_reviewed"
 REJECTED_COLLECTION = "rejected_templates"
 
 
-def template_correction():
+@st.cache_data(ttl=600)
+def get_templates(_client):
+    return list(_client[DB_NAME][SOURCE_COLLECTION].find())
+
+
+@st.cache_data(ttl=600)
+def get_template_title(_client, _template):
+    return _client[DB_NAME].dereference(_template["title"])
+
+
+def template_correction(client):
     st.title("Template Correction")
 
-    templates = list(client[DB_NAME][SOURCE_COLLECTION].find())
+    templates = get_templates(client)
 
     if "current_index" not in st.session_state:
         st.session_state.current_index = 0
 
     if st.session_state.current_index < len(templates):
         template = templates[st.session_state.current_index]
-        template_title = client[DB_NAME].dereference(template["title"])
+        template_title = get_template_title(client, template)
 
         col1, col2 = st.columns(2)
         with col1:
