@@ -9,7 +9,10 @@
     ```bash
     pip install -r requirements.txt
     ```
-4. Run the application
+
+4. Insert secrets.toml in ./.streamlit folder (create folder if not present) 
+
+5. Run the application
     ```bash
     streamlit run main.py
     ```
