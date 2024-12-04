@@ -5,14 +5,13 @@ from template_correction import template_correction
 from pymongo import MongoClient
 import pickle as pkl
 
-with open("secrets.pkl", "rb") as f:
-    secrets = pkl.load(f)
+connection_string = f"mongodb+srv://{st.secrets['db_username']}:{st.secrets['db_pswd']}@{st.secrets['cluster_name']}.mongodb.net/?retryWrites=true&w=majority&appName=Feedback"
 
 
 @st.cache_resource
 def get_db_client():
     return MongoClient(
-        secrets["db_connection"],
+        connection_string,
     )
 
 
